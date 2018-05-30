@@ -1,0 +1,11 @@
+{
+    "name": "ouerhani-saber",
+    "version": "0.1.0",
+    "dependencies": {
+        "ejs": "^2.5.7",
+        "ent": "^2.2.0",
+        "express": "^4.16.2",
+        "pm2": "^2.10.1",
+        "socket.io": "^2.0.4"
+    }
+}

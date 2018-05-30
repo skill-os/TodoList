@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>TodoList avec WebSocket</title>
+		<style>
+            a {text-decoration: none; color: black;}
+        </style>
+    </head>
+	<body class="container"> 
+		<ul id="tdodo_lists"></ul>
+		<form action="" method="post">
+			<label for="text_name">Que dois-je faire ? </label>
+			<input id="todo_name" type="text" name="tache">
+			<input type="submit" value="Valider">
+		</form>
+	</body>
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+            var socket = io.connect('http://localhost:8080');
+			
+			//Quand le client reçoit l'ajout d'un élément
+		    socket.on('live_list', function(data){
+				var items=[];
+					$(data).each(function(index, value) {
+						items.push($('<li/>').html('<a href="#'+index+'" id="delete_todo">&#10008;</a> '+value)); //inserer l'élément html dans un tableau
+					});
+					$('#tdodo_lists').empty().append($('#tdodo_lists'), items);//vider ul et inserer le tableau qui contient les 'li'
+			});
+			
+			
+			$(function () {
+			
+				//gestion l'envoi du formulaire
+				$("form").submit(function(){
+					if($("#todo_name").val() != ""){
+					  socket.emit("new_todo", $("#todo_name").val());
+					  $("#todo_name").val('');
+					  return false;
+				  }
+				});
+				
+				//Gestion du bouton suppression
+				$('#tdodo_lists').on('click', 'a',  function(event) {
+					var idTodo = $(this).attr("href").substring(1); // récuperer l'id de todo
+					socket.emit("delete_todo", idTodo); // envoi de la suppression de l'élement au serveur
+					return false;
+				});
+			  });
+			  
+        </script>	
+</html>
